@@ -1,0 +1,776 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Telegram Premium • Звёзды</title>
+    <!-- Font Awesome Icons (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+            color: #1e1e2f;
+            line-height: 1.5;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        /* Основной контент с товарами */
+        .products-section {
+            flex: 2;
+            min-width: 280px;
+        }
+
+        /* Боковая корзина */
+        .cart-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 28px;
+            padding: 24px 20px;
+            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.08), 0 5px 12px -4px rgba(0,0,0,0.02);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            border: 1px solid #edf2f7;
+        }
+
+        /* Заголовки */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h1 i {
+            color: #2a9df4;
+            font-size: 1.8rem;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 32px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid rgba(42, 157, 244, 0.2);
+            padding-bottom: 12px;
+        }
+
+        h2 i {
+            color: #f5b342;
+        }
+
+        .subhead {
+            color: #64748b;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        /* Карточки товаров */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 18px;
+            margin-bottom: 16px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 16px 18px;
+            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.15s ease, box-shadow 0.2s;
+            border: 1px solid #eef2f6;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            backdrop-filter: blur(2px);
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 30px -8px rgba(0, 100, 200, 0.12);
+            border-color: #cbdffc;
+        }
+
+        .card-icon {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+            color: #2a9df4;
+        }
+
+        .stars-icon {
+            color: #fbbf24;
+        }
+
+        .product-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 4px;
+        }
+
+        .product-desc {
+            font-size: 0.85rem;
+            color: #5e6f8b;
+            margin-bottom: 16px;
+        }
+
+        .price-tag {
+            font-weight: 800;
+            font-size: 1.7rem;
+            color: #0b1e32;
+            margin: 8px 0 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .price-tag small {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #7c8ba0;
+        }
+
+        .btn-add {
+            background: white;
+            border: 1.5px solid #dce5ec;
+            color: #1e293b;
+            padding: 12px 12px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #fafcff;
+        }
+
+        .btn-add i {
+            font-size: 1rem;
+            color: #2a9df4;
+        }
+
+        .btn-add:hover {
+            background: #2a9df4;
+            border-color: #2a9df4;
+            color: white;
+        }
+
+        .btn-add:hover i {
+            color: white;
+        }
+
+        /* Стили корзины */
+        .cart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .cart-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 40px;
+            transition: all 0.1s;
+        }
+
+        .clear-btn:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .cart-items {
+            list-style: none;
+            margin-bottom: 20px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #edf2f9;
+        }
+
+        .cart-item-info {
+            flex: 2;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-price {
+            font-size: 0.9rem;
+            color: #4a5a72;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            background: #f1f5f9;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e293b;
+            transition: 0.1s;
+        }
+
+        .qty-btn:hover {
+            background: #e0e9f3;
+        }
+
+        .item-qty {
+            font-weight: 600;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: #a0afbe;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px;
+            margin-left: 4px;
+            border-radius: 20px;
+        }
+
+        .remove-item:hover {
+            color: #e11d48;
+            background: #ffe4e6;
+        }
+
+        .cart-total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            padding: 18px 0 10px;
+            border-top: 2px dashed #cbd5e1;
+        }
+
+        .promo-section {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0 18px;
+        }
+
+        .promo-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        .promo-btn {
+            background: #eef2ff;
+            border: none;
+            border-radius: 50px;
+            padding: 0 18px;
+            font-weight: 500;
+            color: #2563eb;
+            cursor: pointer;
+            transition: 0.15s;
+            border: 1px solid transparent;
+        }
+
+        .promo-btn:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        .checkout-btn {
+            background: #1e293b;
+            color: white;
+            width: 100%;
+            padding: 16px 18px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 18px -6px #1e293b40;
+            margin-top: 8px;
+        }
+
+        .checkout-btn:hover {
+            background: #0f172a;
+            transform: scale(1.01);
+        }
+
+        .empty-cart-msg {
+            text-align: center;
+            color: #8696a8;
+            padding: 30px 0;
+            font-style: italic;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            text-align: center;
+            color: #6f7f94;
+            font-size: 0.85rem;
+        }
+
+        .badge {
+            background: #e9f2ff;
+            color: #1e4b8a;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 40px;
+            margin-left: 8px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 850px) {
+            .wrapper {
+                flex-direction: column;
+            }
+            .cart-section {
+                position: static;
+                width: 100%;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .product-card {
+                padding: 14px 10px;
+            }
+            .price-tag {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <!-- Левая часть: товары -->
+    <div class="products-section">
+        <header style="margin-bottom: 10px;">
+            <h1>
+                <i class="fab fa-telegram-plane"></i> 
+                Telegram Premium & Звёзды
+                <span class="badge">официальный партнёр</span>
+            </h1>
+            <div class="subhead">
+                <i class="fas fa-bolt" style="color: #fbbf24;"></i> Мгновенная доставка • Безопасная оплата
+            </div>
+        </header>
+
+        <!-- Секция Telegram Premium -->
+        <h2><i class="fas fa-crown" style="color: #fbbf24;"></i> Telegram Premium</h2>
+        <div class="card-grid">
+            <!-- Premium Месяц -->
+            <div class="product-card" data-id="premium-1m" data-name="Premium 1 месяц" data-price="350">
+                <div class="card-icon"><i class="fas fa-star"></i></div>
+                <div class="product-title">1 месяц</div>
+                <div class="product-desc">Полный доступ · без рекламы</div>
+                <div class="price-tag">350 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+            <!-- Premium Год -->
+            <div class="product-card" data-id="premium-12m" data-name="Premium 12 месяцев" data-price="2300">
+                <div class="card-icon"><i class="fas fa-crown"></i></div>
+                <div class="product-title">1 год</div>
+                <div class="product-desc">Выгода 23% · эксклюзивные стикеры</div>
+                <div class="price-tag">2 300 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+            <!-- Premium 2 года -->
+            <div class="product-card" data-id="premium-24m" data-name="Premium 24 месяца" data-price="3200">
+                <div class="card-icon"><i class="fas fa-gem"></i></div>
+                <div class="product-title">2 года</div>
+                <div class="product-desc">Максимальная экономия · 133₽/мес</div>
+                <div class="price-tag">3 200 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+        </div>
+
+        <!-- Секция Telegram Stars (Звёзды) -->
+        <h2 style="margin-top: 40px;"><i class="fas fa-star stars-icon"></i> Telegram Stars</h2>
+        <div class="card-grid">
+            <!-- 100 звёзд -->
+            <div class="product-card" data-id="stars-100" data-name="⭐ 100 звёзд" data-price="171">
+                <div class="card-icon stars-icon"><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <div class="product-title">100 звёзд</div>
+                <div class="product-desc">для реакций и подарков</div>
+                <div class="price-tag">171 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+            <!-- 150 звёзд -->
+            <div class="product-card" data-id="stars-150" data-name="⭐ 150 звёзд" data-price="256.5">
+                <div class="card-icon stars-icon"><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <div class="product-title">150 звёзд</div>
+                <div class="product-desc">+50 к базовому</div>
+                <div class="price-tag">256.5 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+            <!-- 200 звёзд -->
+            <div class="product-card" data-id="stars-200" data-name="⭐ 200 звёзд" data-price="342">
+                <div class="card-icon stars-icon"><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <div class="product-title">200 звёзд</div>
+                <div class="product-desc">популярный набор</div>
+                <div class="price-tag">342 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+            <!-- 500 звёзд -->
+            <div class="product-card" data-id="stars-500" data-name="⭐ 500 звёзд" data-price="855">
+                <div class="card-icon stars-icon"><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <div class="product-title">500 звёзд</div>
+                <div class="product-desc">выгоднее на 5%</div>
+                <div class="price-tag">855 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+            <!-- 1000 звёзд -->
+            <div class="product-card" data-id="stars-1000" data-name="⭐ 1000 звёзд" data-price="1710">
+                <div class="card-icon stars-icon"><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <div class="product-title">1000 звёзд</div>
+                <div class="product-desc">хит продаж</div>
+                <div class="price-tag">1 710 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+            <!-- 5000 звёзд -->
+            <div class="product-card" data-id="stars-5000" data-name="⭐ 5000 звёзд" data-price="8550">
+                <div class="card-icon stars-icon"><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <div class="product-title">5000 звёзд</div>
+                <div class="product-desc">для каналов и розыгрышей</div>
+                <div class="price-tag">8 550 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+            <!-- 10000 звёзд -->
+            <div class="product-card" data-id="stars-10000" data-name="⭐ 10000 звёзд" data-price="17100">
+                <div class="card-icon stars-icon"><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <div class="product-title">10000 звёзд</div>
+                <div class="product-desc">максимальный запас</div>
+                <div class="price-tag">17 100 <small>₽</small></div>
+                <button class="btn-add add-to-cart"><i class="fas fa-cart-plus"></i> В корзину</button>
+            </div>
+        </div>
+        <div class="footer-note">
+            <i class="fas fa-shield-alt"></i> Оплата через защищённое соединение · возврат 24/7
+        </div>
+    </div>
+
+    <!-- Правая часть: Корзина -->
+    <div class="cart-section">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-bag" style="color: #2a9df4;"></i> Корзина</h3>
+            <button class="clear-btn" id="clear-cart-btn"><i class="fas fa-trash-alt"></i> Очистить</button>
+        </div>
+        <ul class="cart-items" id="cart-items-list">
+            <li class="empty-cart-msg">🛒 Пока пусто<br>добавьте товары</li>
+        </ul>
+        <div class="cart-total">
+            <span>Итого:</span>
+            <span id="cart-total-price">0 ₽</span>
+        </div>
+        <!-- Промокод (опционально, для демо) -->
+        <div class="promo-section">
+            <input type="text" class="promo-input" placeholder="Промокод" id="promo-input">
+            <button class="promo-btn" id="apply-promo">Применить</button>
+        </div>
+        <button class="checkout-btn" id="checkout-btn"><i class="fas fa-lock"></i> Оформить заказ</button>
+        <p style="font-size: 0.75rem; color: #8896a8; margin-top: 16px; text-align: center;">
+            <i class="far fa-credit-card"></i> Visa, Mastercard, МИР
+        </p>
+    </div>
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        // Состояние корзины: массив объектов { id, name, price, quantity }
+        let cart = [];
+
+        // DOM элементы
+        const cartItemsContainer = document.getElementById('cart-items-list');
+        const totalSpan = document.getElementById('cart-total-price');
+        const clearCartBtn = document.getElementById('clear-cart-btn');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const promoInput = document.getElementById('promo-input');
+        const applyPromoBtn = document.getElementById('apply-promo');
+
+        // Функция форматирования цены
+        function formatPrice(price) {
+            return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ') + ' ₽';
+        }
+
+        // Сохранение корзины в localStorage (опционально)
+        function saveCartToStorage() {
+            localStorage.setItem('telegramShopCart', JSON.stringify(cart));
+        }
+
+        // Загрузка из localStorage
+        function loadCartFromStorage() {
+            const saved = localStorage.getItem('telegramShopCart');
+            if (saved) {
+                try {
+                    cart = JSON.parse(saved);
+                } catch(e) { cart = []; }
+            }
+        }
+
+        // Рендер корзины
+        function renderCart() {
+            if (!cartItemsContainer) return;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<li class="empty-cart-msg">🛒 Пока пусто<br>добавьте товары</li>';
+                totalSpan.textContent = '0 ₽';
+                return;
+            }
+
+            let itemsHtml = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                itemsHtml += `
+                    <li class="cart-item" data-cart-index="${index}">
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">${formatPrice(item.price)} / шт.</div>
+                        </div>
+                        <div class="cart-item-actions">
+                            <button class="qty-btn dec-qty" data-index="${index}">−</button>
+                            <span class="item-qty">${item.quantity}</span>
+                            <button class="qty-btn inc-qty" data-index="${index}">+</button>
+                            <button class="remove-item" data-index="${index}" title="Удалить"><i class="fas fa-times"></i></button>
+                        </div>
+                    </li>
+                `;
+            });
+
+            cartItemsContainer.innerHTML = itemsHtml;
+            totalSpan.textContent = formatPrice(total);
+
+            // Привязываем события для кнопок внутри корзины
+            document.querySelectorAll('.dec-qty').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = btn.dataset.index;
+                    if (idx !== undefined && cart[idx]) {
+                        if (cart[idx].quantity > 1) {
+                            cart[idx].quantity--;
+                        } else {
+                            cart.splice(idx, 1);
+                        }
+                        saveCartToStorage();
+                        renderCart();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.inc-qty').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = btn.dataset.index;
+                    if (idx !== undefined && cart[idx]) {
+                        cart[idx].quantity++;
+                        saveCartToStorage();
+                        renderCart();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = btn.dataset.index;
+                    if (idx !== undefined && cart[idx]) {
+                        cart.splice(idx, 1);
+                        saveCartToStorage();
+                        renderCart();
+                    }
+                });
+            });
+        }
+
+        // Добавление товара в корзину
+        function addToCart(id, name, price) {
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({
+                    id: id,
+                    name: name,
+                    price: parseFloat(price),
+                    quantity: 1
+                });
+            }
+            saveCartToStorage();
+            renderCart();
+        }
+
+        // Очистка корзины
+        function clearCart() {
+            cart = [];
+            saveCartToStorage();
+            renderCart();
+        }
+
+        // Инициализация: загрузка и отрисовка
+        loadCartFromStorage();
+        renderCart();
+
+        // Навешиваем обработчики на все кнопки "В корзину"
+        const addButtons = document.querySelectorAll('.add-to-cart');
+        addButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const card = btn.closest('.product-card');
+                if (!card) return;
+
+                const id = card.dataset.id;
+                const name = card.dataset.name;
+                const price = card.dataset.price;
+
+                if (id && name && price) {
+                    addToCart(id, name, price);
+                    // Небольшая обратная связь
+                    btn.style.backgroundColor = '#2a9df4';
+                    btn.style.color = 'white';
+                    setTimeout(() => {
+                        btn.style.backgroundColor = '';
+                        btn.style.color = '';
+                    }, 120);
+                }
+            });
+        });
+
+        // Очистка корзины
+        if (clearCartBtn) {
+            clearCartBtn.addEventListener('click', () => {
+                clearCart();
+            });
+        }
+
+        // Оформление заказа (демо)
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length === 0) {
+                    alert('🛍️ Корзина пуста. Добавьте товары для оформления.');
+                    return;
+                }
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                let message = `✅ Заказ оформлен!\n\nТовары:\n`;
+                cart.forEach(item => {
+                    message += `• ${item.name} x${item.quantity} = ${formatPrice(item.price * item.quantity)}\n`;
+                });
+                message += `\n💰 Итого: ${formatPrice(total)}\n\nСпасибо за покупку! В ближайшее время с вами свяжется менеджер.`;
+                alert(message);
+                // Можно оставить корзину, но для демо очищать не будем.
+            });
+        }
+
+        // Промокод (простая демонстрация)
+        if (applyPromoBtn) {
+            applyPromoBtn.addEventListener('click', () => {
+                const code = promoInput.value.trim().toUpperCase();
+                if (code === 'PREMIUM10' || code === 'STARS5') {
+                    alert('🎁 Промокод активирован! Скидка будет учтена менеджером при подтверждении заказа.');
+                } else {
+                    alert('❌ Промокод не найден. Попробуйте PREMIUM10 или STARS5 (демо).');
+                }
+                promoInput.value = '';
+            });
+        }
+
+        // Дополнительно: при клике на Enter в поле промокода
+        if (promoInput) {
+            promoInput.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    applyPromoBtn.click();
+                }
+            });
+        }
+
+        // Чтобы при наведении на кнопку добавить не сбивался стиль (уже обработано)
+        // Защита от повторных добавлений обработчиков
+    })();
+</script>
+</body>
+</html>
+```
